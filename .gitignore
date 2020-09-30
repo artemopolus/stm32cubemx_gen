@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+stm32_driver_generator/.vs/stm32_driver_generator/v15/.suo
+*.sln
+stm32_driver_generator/stm32_driver_generator/stm32_driver_generator.pyproj
+.vs/
