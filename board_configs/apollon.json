@@ -1,0 +1,25 @@
+{
+    "clock": 72000000,
+    "interfaces": {
+        "i2c": {
+            "i2c1": "disabled",
+            "i2c2": "disabled"
+        },
+        "spi": {
+            "spi1": "disabled",
+            "spi2": "disabled"
+        }
+    },
+    "mcu": "STM32F103xB",
+    "sensors": {
+        "BMP280": {
+            "interface": "i2c2"
+        },
+        "ISM330": {
+            "interface": "spi1"
+        },
+        "LSM303AH": {
+            "interface": "spi1"
+        }
+    }
+}

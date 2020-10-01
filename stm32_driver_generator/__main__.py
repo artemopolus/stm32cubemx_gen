@@ -59,8 +59,9 @@ for one_project in projects_list:
     project_json = path_to_board_configs + '\\' + project_name + '.json'
     project_data = {}
     if (os.path.exists(project_json)):
-        with open(path_to_board_configs, 'r') as source:
-            project_data = json.loads(source)
+        print('load data from ' + project_json)
+        with open(project_json, 'r', encoding='utf-8') as source:
+            project_data = json.loads(source.read())
     else:
         objects_list = os.listdir(project_dir + '\\Inc' )
         interface_list = {}
@@ -73,9 +74,21 @@ for one_project in projects_list:
                 i2c_interface = hardware_configs.getInterfaceCount(project_dir, 'i2c')
                 if i2c_interface:
                     interface_list['i2c'] = i2c_interface
-        print(hardware_configs.getDataFrom_ioc(target_files_list[0], 'Mcu.Name='))
-        print(hardware_configs.getSensorsFrom_ioc(target_files_list[0]))
-        print(hardware_configs.getMcuFlagFrom_ioc(target_files_list[0]))
-        print(hardware_configs.getSysClkFrom_ioc(target_files_list[0]))
-        print(interface_list)
+        project_data['interfaces'] = interface_list
+        for target_file in target_files_list:
+            if target_file.endswith('.ioc'):
+                snsr = hardware_configs.getSensorsFrom_ioc(target_file)
+                if snsr:
+                    project_data['sensors'] = snsr
+                project_data['mcu'] = hardware_configs.getMcuFlagFrom_ioc(target_file)
+                project_data['clock'] = hardware_configs.getSysClkFrom_ioc(target_file)
+        with open(project_json, 'w') as target:
+            json.dump(project_data, target, sort_keys=True, indent=4)
+    print(project_data)
+
+    # работаем с исходным кодом
+
+    # получаем исходный код интерфейсов
+
+    # загружаем драйвера для сенсоров
 
