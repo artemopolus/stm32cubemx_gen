@@ -2,6 +2,7 @@ import os
 import sys
 import json
 from . import hardware_configs
+from . import code_c_parser
 
 target_folders_list = ['Inc', 'Src']
 target_ext_list = ['.ioc', '.ld']
@@ -25,6 +26,11 @@ else:
 
 # проверяем наличие папки для конфигураций json
 path_to_board_configs = path_to_project_dir + '\\board_configs'
+path_to_drivers_dir = path_to_project_dir + '\\board_drivers'
+
+if not os.path.exists(path_to_drivers_dir):
+    os.mkdir(path_to_drivers_dir)
+
 if os.path.exists(path_to_board_configs):
     print('target config folder: ' + path_to_board_configs)
 else:
@@ -87,8 +93,34 @@ for one_project in projects_list:
     print(project_data)
 
     # работаем с исходным кодом
+    project_drivers_dir = path_to_drivers_dir + '\\' + project_name
 
-    # получаем исходный код интерфейсов
+    if not os.path.exists(project_drivers_dir):
+        os.mkdir(project_drivers_dir)
+    # перебираем датчики для работы
 
-    # загружаем драйвера для сенсоров
+    sensor_list = project_data['sensors']
+    interface_list = project_data['interfaces']
+    for sensor_type in sensor_list:
+        sns_interface = sensor_list[sensor_type]['interface']
+        sns_interface_type = sns_interface[:(len(sns_interface)-1)]
+        if interface_list[sns_interface_type ][sns_interface] == 'enabled':
+            sensor_drivers_dir = project_drivers_dir + '\\' + sensor_type.lower()
+            # создаем директорию
+            if not os.path.exists(sensor_drivers_dir):
+                os.mkdir(sensor_drivers_dir)
+
+
+            # получаем исходный код интерфейсов
+            path_to_interface_src = path_to_boards_dir + '\\' + project_name + '\\Src\\'
+            fun_body = code_c_parser.getFunctionC( path_to_interface_src, sns_interface )
+
+            sensor_file_name = (project_name + '_' + sensor_type + '_' + sns_interface_type).lower()
+
+            fun_body = code_c_parser.modifyFunHeader(sensor_file_name, fun_body)
+            fun_body = code_c_parser.addStruct(sensor_file_name, sns_interface_type, fun_body)
+            
+            code_c_parser.saveToFileC(sensor_drivers_dir, sensor_file_name, fun_body)
+
+            # загружаем драйвера для сенсоров
 

@@ -6,7 +6,7 @@
             "i2c2": "disabled"
         },
         "spi": {
-            "spi1": "disabled",
+            "spi1": "enabled",
             "spi2": "disabled"
         }
     },
