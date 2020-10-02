@@ -37,6 +37,8 @@ def modifyFunHeader(name, fun_body):
 
 def addIncludeForSrc(name, fun_body):
     headers = [('#include \"' + name + '_generated.h\"')]
+    headers += ['#include <embox/unit.h>']
+    headers += ['#include <kernel/printk.h>']
     fun_body = headers + fun_body
     return fun_body
 

@@ -1,4 +1,6 @@
 #include "apollon_ism330_spi_generated.h"
+#include <embox/unit.h>
+#include <kernel/printk.h>
 struct apollon_ism330_spi_dev {
 	int spi_bus;
 	struct spi_device *spi_dev;
