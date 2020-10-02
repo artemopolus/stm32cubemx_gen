@@ -1,3 +1,6 @@
+import sys
+import os
+
 
 def getFunctionC(path, interface):
     print(path)
@@ -91,4 +94,28 @@ def saveToFileC(path, name, fun_body):
     with open(path + '\\' + name + '_generated.c', 'w') as trg:
         trg.write('\n'.join(fun_body))
     return
+
+def genBaseMybuild(path, mcu, folder = 'stm32f103'):
+    body = []
+    prj_name = path.split('\\')[-1]
+    bsp_name = mcu[:7].lower()
+    body += ['package ' + folder + '.' + prj_name]
+    body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
+    body += ['module ' + 'base' +'{']
+    for elem in os.listdir(path):
+        if elem.endswith('.c'):
+            body += ['\tsource \"' + elem +'\"']
+        if elem.endswith('.h'):
+            body += ['\t' + r'@IncludeExport(path="' + prj_name + '\")']
+            body += ['\tsource \"' + elem +'\"']
+    body += ['}']
+    return body
+
+def saveToMybuild(path, fun_body):
+    fun_body = fun_body + ['']
+
+    with open(path + '\\Mybuild','w') as trg:
+        trg.write('\n'.join(fun_body))
+    return
+
     

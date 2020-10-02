@@ -129,8 +129,11 @@ for one_project in projects_list:
             
             fun_body = code_c_parser.addIncludeForSrc(sensor_file_name, fun_body)
 
+            mybuild_body = code_c_parser.genBaseMybuild(sensor_drivers_dir,project_data['mcu'])
+
             code_c_parser.saveToFileC(sensor_drivers_dir, sensor_file_name, fun_body)
             code_c_parser.saveToFileH(sensor_drivers_dir, sensor_file_name, header_body)
+            code_c_parser.saveToMybuild(sensor_drivers_dir,mybuild_body)
 
             # загружаем драйвера для сенсоров
 

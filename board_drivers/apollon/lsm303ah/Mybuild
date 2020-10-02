@@ -1,0 +1,7 @@
+package stm32f103.lsm303ah
+@BuildDepends(third_party.bsp.stm32f1cube.cube)
+module base{
+	source "apollon_lsm303ah_spi_generated.c"
+	@IncludeExport(path="lsm303ah")
+	source "apollon_lsm303ah_spi_generated.h"
+}

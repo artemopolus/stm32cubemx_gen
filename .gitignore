@@ -54,3 +54,5 @@ stm32_driver_generator/.vs/stm32_driver_generator/v15/.suo
 *.sln
 stm32_driver_generator/stm32_driver_generator/stm32_driver_generator.pyproj
 .vs/
+stm32_driver_generator/__pycache__/__main__.cpython-37.pyc
+stm32_driver_generator/__pycache__/code_c_parser.cpython-37.pyc
