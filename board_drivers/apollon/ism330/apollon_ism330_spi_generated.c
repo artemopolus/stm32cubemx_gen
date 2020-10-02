@@ -1,8 +1,10 @@
+#include "apollon_ism330_spi_generated.h"
 struct apollon_ism330_spi_dev {
 	int spi_bus;
 	struct spi_device *spi_dev;
-}
-int apollon_ism330_spi_init( struct apollon_ism330_spi_dev *dev )
+};
+EMBOX_UNIT_INIT(apollon_ism330_spi_init);
+static int apollon_ism330_spi_init( struct apollon_ism330_spi_dev *dev )
 {
   LL_SPI_InitTypeDef SPI_InitStruct = {0};
 

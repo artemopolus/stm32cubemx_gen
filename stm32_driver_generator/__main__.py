@@ -118,9 +118,19 @@ for one_project in projects_list:
             sensor_file_name = (project_name + '_' + sensor_type + '_' + sns_interface_type).lower()
 
             fun_body = code_c_parser.modifyFunHeader(sensor_file_name, fun_body)
+            header_body = []
+
+            header_body = code_c_parser.addIncludeForHeader(project_data['mcu'],sns_interface_type,header_body)
+            if 'cmds_list' in sensor_list[sensor_type]:
+                fun_body = code_c_parser.addStdCmdShell(sensor_list[sensor_type]['cmds_list'],sensor_file_name, fun_body)
+                header_body = code_c_parser.addStdCmdHeader(sensor_list[sensor_type]['cmds_list'],sensor_file_name, header_body)
             fun_body = code_c_parser.addStruct(sensor_file_name, sns_interface_type, fun_body)
+
             
+            fun_body = code_c_parser.addIncludeForSrc(sensor_file_name, fun_body)
+
             code_c_parser.saveToFileC(sensor_drivers_dir, sensor_file_name, fun_body)
+            code_c_parser.saveToFileH(sensor_drivers_dir, sensor_file_name, header_body)
 
             # загружаем драйвера для сенсоров
 

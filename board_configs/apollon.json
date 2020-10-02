@@ -19,7 +19,11 @@
             "interface": "spi1"
         },
         "LSM303AH": {
-            "interface": "spi1"
+            "interface": "spi1",
+            "cmds_list":{
+                "get_option": "void",
+                "set_option": "uint8_t value"
+            }
         }
     }
 }

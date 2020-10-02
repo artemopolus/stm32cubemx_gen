@@ -1,8 +1,10 @@
+#include "apollon_lsm303ah_spi_generated.h"
 struct apollon_lsm303ah_spi_dev {
 	int spi_bus;
 	struct spi_device *spi_dev;
-}
-int apollon_lsm303ah_spi_init( struct apollon_lsm303ah_spi_dev *dev )
+};
+EMBOX_UNIT_INIT(apollon_lsm303ah_spi_init);
+static int apollon_lsm303ah_spi_init( struct apollon_lsm303ah_spi_dev *dev )
 {
   LL_SPI_InitTypeDef SPI_InitStruct = {0};
 
@@ -33,5 +35,13 @@ int apollon_lsm303ah_spi_init( struct apollon_lsm303ah_spi_dev *dev )
   SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
   SPI_InitStruct.CRCPoly = 10;
   LL_SPI_Init(SPI1, &SPI_InitStruct);
+
+}
+uint8_t apollon_lsm303ah_spi_get_option(void)
+{
+
+}
+uint8_t apollon_lsm303ah_spi_set_option(uint8_t value)
+{
 
 }
