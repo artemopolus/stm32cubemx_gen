@@ -71,13 +71,9 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define NB_CTRL_MESSAGES 10
-#define MAX_NB_DATA_TO_TRANSMIT 1640
-#define NB_STORAGE_BUFFERS 3
-#define NB_CONTROL_MESSAGES 10
-#define NB_MESSAGE_BUFFER 10
-#define MAX_NB_RX_UART 32
-#define MAX_NB_TX_UART 40
+#define sensor_LSM303AH_SPI1 1
+#define sensor_ISM330_SPI1 1
+#define sensor_BMP280_I2C2 1
 #define LSM303AH_CS_Pin GPIO_PIN_4
 #define LSM303AH_CS_GPIO_Port GPIOA
 #define ISM330_CS_Pin GPIO_PIN_0
