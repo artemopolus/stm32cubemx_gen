@@ -215,6 +215,19 @@ void DMA1_Channel7_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM1 update interrupt.
+  */
+void TIM1_UP_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_UP_IRQn 0 */
+
+  /* USER CODE END TIM1_UP_IRQn 0 */
+  /* USER CODE BEGIN TIM1_UP_IRQn 1 */
+
+  /* USER CODE END TIM1_UP_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM2 global interrupt.
   */
 void TIM2_IRQHandler(void)
@@ -226,6 +239,19 @@ void TIM2_IRQHandler(void)
   /* USER CODE BEGIN TIM2_IRQn 1 */
 
   /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
 }
 
 /**
