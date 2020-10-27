@@ -83,6 +83,8 @@ void Error_Handler(void);
 #define LSM303_INT1_XL_GPIO_Port GPIOB
 #define LSM303_MAG_INT_Pin GPIO_PIN_2
 #define LSM303_MAG_INT_GPIO_Port GPIOB
+#define MLINE_SPI2_CS_Pin GPIO_PIN_12
+#define MLINE_SPI2_CS_GPIO_Port GPIOB
 #define ISM330_INT1_Pin GPIO_PIN_8
 #define ISM330_INT1_GPIO_Port GPIOA
 #define ISM330_INT2_Pin GPIO_PIN_9
