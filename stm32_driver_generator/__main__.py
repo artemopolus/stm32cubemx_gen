@@ -147,7 +147,7 @@ for one_project in projects_list:
         filepath = trg_project_dir + '\\Src\\' + interface_type +'.c'
         interface_type_list = project_data['interface_list'][interface_type]
         for interface in interface_type_list:
-            interface_dir = current_project_dir + '\\' + interface
+            interface_dir = current_project_dir + '\\' + interface_type
             print('interface dir: ' + interface_dir)
             if not os.path.exists(interface_dir):
                 os.mkdir(interface_dir) 
