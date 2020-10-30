@@ -1,4 +1,6 @@
-Генератор файлов для Embox через STM32CubeMX. Для работы необходимо скачать STM32CubeMX здесь: https://www.st.com/en/development-tools/stm32cubemx.html
+Генератор файлов для Embox через STM32CubeMX. Для работы необходимо:
+* скачать STM32CubeMX здесь: https://www.st.com/en/development-tools/stm32cubemx.html
+* сам проект ОС https://github.com/embox/embox
 
 
 Алгоритм:
