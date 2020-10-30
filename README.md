@@ -24,8 +24,16 @@
 * Проверяем, что выбрано Copy only the necessary library files
 * В подпапке Advanced settings 
 * Выбираем для генерации тип LL
-* Запускаем python -m stm32_driver_generator
+* Запускаем 
+```
+python -m stm32_driver_generator
+```
 * В папке platform создадутся необходимые файлы
+* Их можно просто скопировать в папку embox/platforms и собрать проект:
+```
+make confload-platform/board_name/init
+make 
+```
 
 Проверенные интерфейсы:
 -------------------
