@@ -13,6 +13,7 @@
 #include "stm32f1xx_ll_pwr.h"
 #include "stm32f1xx.h"
 #include "stm32f1xx_ll_gpio.h"
+#include "spi1_generated.h"
 #include <embox/unit.h>
 EMBOX_UNIT_INIT(SPI1_HALF_BASE_init);
 static int SPI1_HALF_BASE_init(void)

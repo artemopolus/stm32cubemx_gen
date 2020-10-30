@@ -13,6 +13,7 @@
 #include "stm32f7xx_ll_cortex.h"
 #include "stm32f7xx_ll_utils.h"
 #include "stm32f7xx_ll_pwr.h"
+#include "spi1_generated.h"
 #include <embox/unit.h>
 #include <kernel/irq.h>
 #include <kernel/lthread/lthread.h>

@@ -2,9 +2,36 @@ import sys
 import os
 import re
 
+def getArchFunC(paths, mcu):
+    path_to_driver = paths['path_to_driver']
+    path_to_cubesrc = paths['path_to_cubesrc']
+    funs_list = []
+    funs_list.append('Error_Handler')
+    funs_list.append('arch_init')
+    funs_list.append('arch_idle')
+    funs_list.append('arch_shutdown')
+    funs_list.append('HAL_GetTick')
+    labels = {}
+    labels['stm32xx'] = mcu[:len('stm32xx')].lower()
+    headers = getFunctionC(path_to_driver,'sys', is_cubemx=0, str_label='sys_init')
+    del headers[0]
+    del headers[0]
+    del headers[-1]
+
+    headers = replaceTextUsingLabels(headers, labels)
+
+    fun_body = []
+    for function in funs_list:
+        fun_body = fun_body + getFunctionC(path_to_driver, 'sys', is_cubemx=0, str_label=function)
+
+    clock_body = getFunctionC(path_to_cubesrc, 'main', is_cubemx=0, str_label='SystemClock_Config')
+
+    output = headers + [clock_body[0] + ';'] + fun_body + clock_body
+    return output
 
 def getInterfaceInitBlockC(path, interface_type, interface, is_dma = 0):
     trg_label = interface + '_full_base'
+    start_header = ['#include \"' + interface + '_generated.h\"']
     if is_dma:
         trg_label = interface_type.lower() + '_full_dma_init'
         fun_body = getFunctionC(path, interface_type, is_cubemx=0, str_label=trg_label)
@@ -14,9 +41,12 @@ def getInterfaceInitBlockC(path, interface_type, interface, is_dma = 0):
             _trg_label = 'name'
             new = line.replace('name',inserted_name)
             ret_body.append(new)
-        del ret_body[0]
-        del ret_body[0]
-        del ret_body[-1]
+        if ret_body:
+            del ret_body[0]
+            del ret_body[0]
+            del ret_body[-1]
+        ret_body = start_header + ret_body
+
         return ret_body
     else:
         return []
@@ -57,18 +87,23 @@ def updateExternFunFromDMA(path_to_driver, interface_type, interface, dma_list, 
     fun_body = []
     head_body = []
     add_fun = getFunctionC(path_to_driver, interface, is_cubemx=0, str_label=transmit_fun_pt)
-    head_body.append('extern ' + add_fun[0] + ';')
+    if add_fun:
+        head_body.append('extern ' + add_fun[0] + ';')
     fun_body = replaceTextUsingLabels(add_fun, labels)
     add_fun = getFunctionC(path_to_driver, interface, is_cubemx=0, str_label=receive_fun_pt)
-    head_body.append('extern ' + add_fun[0] + ';')
+    if add_fun:
+        head_body.append('extern ' + add_fun[0] + ';')
     fun_body = fun_body + replaceTextUsingLabels(add_fun, labels)
     add_fun = getFunctionC(path_to_driver, interface, is_cubemx=0, str_label=setdatalength_fun_pt)
-    head_body.append('extern ' + add_fun[0] + ';')
+    if add_fun:
+        head_body.append('extern ' + add_fun[0] + ';')
     fun_body = fun_body + replaceTextUsingLabels(add_fun, labels)
 
     return fun_body, head_body
 
 def updateInterface(paths, interface_type, interface, add_label = '_base'):
+    start_header = ['#include \"' + interface + '_generated.h\"']
+
     out_fun = []
     labels = {}
     path_to_src = paths['path_to_src']
@@ -119,7 +154,7 @@ def updateInterface(paths, interface_type, interface, add_label = '_base'):
         if _text:
             ext_headers = ext_headers + ['extern ' + _text[0]]
 
-    out_fun = init + hal_fun_body + add_fun + ext_fun_bodies
+    out_fun = start_header + init + hal_fun_body + add_fun + ext_fun_bodies
     return out_fun, ext_headers
 
 def updateInterfaceFromDMA(path_to_src, path_to_driver, path_to_hal, interface_type, interface, dma_list, add_label = '_full'):
@@ -160,8 +195,9 @@ def updateInterfaceFromDMA(path_to_src, path_to_driver, path_to_hal, interface_t
     hal_fun_body = ['EMBOX_UNIT_INIT(' + target_name + '_init);'] + hal_fun_body
     print('tttttttttttttttttttttttttttttttttttttttttttttttttt')
     add_fun = getFunctionC(path_to_driver, interface, is_cubemx=0, str_label=interface_type + add_label + '_dma')
-    del add_fun[0]
-    del add_fun[0]
+    if add_fun:
+        del add_fun[0]
+        del add_fun[0]
     # замена переменных в данных
     # вставки в функцию
     for line in add_fun:
@@ -219,7 +255,6 @@ def updateInterfaceFromDMA(path_to_src, path_to_driver, path_to_hal, interface_t
         result_line = line
         result_line = result_line.replace(fun_rx_thread_pt, fun_rx_thread_label)
         hal_fun_body.append(result_line)
-
     return hal_fun_body
 
 
@@ -233,7 +268,7 @@ def getFunctionC(path, interface, is_cubemx = 1, str_label = 'void MX_', end_lab
             target_label = str_label
             if is_cubemx:
                 target_label = str_label + interface.upper() + end_label
-            if line.find( target_label ) != -1:
+            if line.find( target_label ) != -1 and line[-1] != ';':
                 start_find_function = True
                 function_body.append(line)
             else:
@@ -333,19 +368,48 @@ def saveToFileC(path, name, fun_body):
         trg.write('\n'.join(fun_body))
     return
 
+def genSysMybuild(path,mcu, folder):
+    body = []
+    prj_name = path.split('\\')[-1]
+    bsp_name = 'stm' + mcu[5:7].lower()
+    body += ['package ' + folder + '.' + prj_name]
+    body += []
+    body += []
+    for elem in os.listdir(path):
+        if elem.startswith('system'):
+            body += ['@Build(stage=1)']
+            body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['static module system_init extends third_party.bsp.st_bsp_api {']
+            body += ['\tsource \"' + elem +'\"']
+            body += [r'@NoRuntime depends third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['}']
+        if elem.startswith('arch'):
+            body += ['@BuildDepends(system_init)']
+            body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['module arch extends embox.arch.arch {']
+            body += ['\tsource \"' + elem +'\"']
+            body += [r'@NoRuntime depends system_init']
+            body += ['\tdepends third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['}']
+    return body
+
 def genBaseMybuild(path, mcu, folder = 'stm32f103'):
     body = []
     prj_name = path.split('\\')[-1]
-    bsp_name = mcu[:7].lower()
+    bsp_name = 'stm' + mcu[5:7].lower()
     body += ['package ' + folder + '.' + prj_name]
-    body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
-    body += ['module ' + 'base' +'{']
+    body += []
+    body += []
     for elem in os.listdir(path):
-        if elem.endswith('.c'):
+        if elem.endswith('_generated.c'):
+            body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['module ' + elem.replace('_generated.c','') +'{']
+        # if elem.endswith('.h'):
             body += ['\tsource \"' + elem +'\"']
-        if elem.endswith('.h'):
-            body += ['\t' + r'@IncludeExport(path="' + prj_name + '\")']
-            body += ['\tsource \"' + elem +'\"']
+            elem_h = elem[:-1] + 'h'
+            if elem_h in os.listdir(path):
+                body += ['\t' + r'@IncludeExport(path="' + prj_name + '\")']
+                body += ['\tsource \"' + elem_h +'\"']
     body += ['}']
     return body
 

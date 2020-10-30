@@ -1,0 +1,12 @@
+package afina_base.i2c
+@BuildDepends(third_party.bsp.stmf7cube.cube)
+module i2c1{
+	source "i2c1_generated.c"
+	@IncludeExport(path="i2c")
+	source "i2c1_generated.h"
+@BuildDepends(third_party.bsp.stmf7cube.cube)
+module i2c4{
+	source "i2c4_generated.c"
+	@IncludeExport(path="i2c")
+	source "i2c4_generated.h"
+}

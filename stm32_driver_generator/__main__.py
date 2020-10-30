@@ -3,11 +3,12 @@ import sys
 import json
 from . import hardware_configs
 from . import code_c_parser
+from . import file_operations
 
 target_folders_list = ['Inc', 'Src']
 target_ext_list = ['.ioc', '.ld']
 
-allowed_interfaces = ['spi']
+allowed_interfaces = ['spi','i2c']
 
 
 path_to_project_dir = os.getcwd()
@@ -142,6 +143,39 @@ for one_project in projects_list:
     if not os.path.exists(init_templates_dir):
         os.mkdir(init_templates_dir)
 
+    # создаем папку для системных файлов
+
+    sys_dir = current_project_dir + '\\sys'
+    if not os.path.exists(sys_dir):
+        os.mkdir(sys_dir)
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+
+    # 
+
+    sys_init_path = file_operations.findFileInFolder(trg_project_dir,'system_' + (project_data['mcu'][:len('stm32fx')]).lower() + 'xx',fileext='.c')
+    if not sys_init_path:
+        print('Can\'t find sys file!')
+        sys.exit()
+    else:
+        print('System init file: ' + sys_init_path[0])
+
+    arch_src_path = file_operations.findFileInFolder(trg_project_dir, 'main', '.c')
+    if not arch_src_path:
+        print('Can\'t find arch file!')
+        sys.exit()
+    else:
+        print('Arch file: ' + arch_src_path[0])
+
+    paths = {}
+    paths['path_to_driver'] = path_to_project_dir + '\\drivers\\sys.c'
+    paths['path_to_cubesrc'] = arch_src_path[0]
+    arch_fun = code_c_parser.getArchFunC(paths, project_data['mcu'])
+    code_c_parser.saveToFileC(sys_dir, 'arch',arch_fun)
+
+    file_operations.copySrcToDst(sys_init_path[0], current_project_dir + '\\sys\\' + sys_init_path[0].split('\\')[-1])
+    mybuild = code_c_parser.genSysMybuild(sys_dir, project_data['mcu'], folder=current_project_dir.split('\\')[-1])
+    code_c_parser.saveToMybuild(sys_dir,mybuild)
+
     for interface_type in project_data['interface_list']:
         print(interface_type)
         filepath = trg_project_dir + '\\Src\\' + interface_type +'.c'
@@ -151,10 +185,13 @@ for one_project in projects_list:
             print('interface dir: ' + interface_dir)
             if not os.path.exists(interface_dir):
                 os.mkdir(interface_dir) 
+            driver_path = path_to_project_dir + '\\drivers\\' + interface_type + '.c'
+            if not os.path.exists(driver_path):
+                with open(driver_path, 'w'):
+                    pass
             if interface.upper() in project_data['dma']:
                 print (project_data['dma'][interface.upper()])
                 dma_body = code_c_parser.getFunctionC(filepath, 'dma')
-                driver_path = path_to_project_dir + '\\drivers\\' + interface_type + '.c'
                 function_body = main_includes + code_c_parser.getInterfaceInitBlockC(driver_path, interface_type, interface, is_dma=1)
 
                 path_to_halsrc = filepath
@@ -177,14 +214,16 @@ for one_project in projects_list:
                 code_c_parser.saveToFileH(interface_dir, interface, externH)
             else:
                 path_array = {}
-                path_array['path_to_driver'] = path_to_project_dir + '\\drivers\\' + interface_type + '.c'
+                path_array['path_to_driver'] = driver_path
                 path_array['path_to_src'] = filepath
 
                 function_body, header_body = code_c_parser.updateInterface(path_array, interface_type, interface)
                 function_body = main_includes + function_body
                 code_c_parser.saveToFileC(interface_dir, interface, function_body)
                 code_c_parser.saveToFileH(interface_dir, interface, header_body)
-
+        mybuild = code_c_parser.genBaseMybuild(interface_dir, project_data['mcu'], folder=current_project_dir.split('\\')[-1])
+        code_c_parser.saveToMybuild(interface_dir,mybuild)
+        print(mybuild)
             # print(function_body)
 
 

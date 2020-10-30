@@ -13,6 +13,7 @@
 #include "stm32f7xx_ll_cortex.h"
 #include "stm32f7xx_ll_utils.h"
 #include "stm32f7xx_ll_pwr.h"
+#include "spi4_generated.h"
 #include <embox/unit.h>
 EMBOX_UNIT_INIT(SPI4_FULL_BASE_init);
 static int SPI4_FULL_BASE_init(void)

@@ -13,6 +13,7 @@
 #include "stm32f1xx_ll_pwr.h"
 #include "stm32f1xx.h"
 #include "stm32f1xx_ll_gpio.h"
+#include "spi2_generated.h"
 #include <embox/unit.h>
 #include <kernel/irq.h>
 #include <kernel/lthread/lthread.h>
