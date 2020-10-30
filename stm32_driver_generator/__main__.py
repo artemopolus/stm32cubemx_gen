@@ -90,12 +90,13 @@ for one_project in projects_list:
             sys.exit()
 
     project_data = {}
+    project_data['name'] = project_name
     for target_file in target_files_list:
         if target_file.endswith('.ioc'):
             project_data['mcu'] = hardware_configs.getMcuFlagFrom_ioc(target_file)
             project_data['clock'] = hardware_configs.getSysClkFrom_ioc(target_file)
             project_data['dma'] = hardware_configs.getDmaParams(target_file)
-    
+
     
     
     #проверяем конфигурационные файлы для проекта плат
@@ -176,6 +177,7 @@ for one_project in projects_list:
     mybuild = code_c_parser.genSysMybuild(sys_dir, project_data['mcu'], folder=current_project_dir.split('\\')[-1])
     code_c_parser.saveToMybuild(sys_dir,mybuild)
 
+
     for interface_type in project_data['interface_list']:
         print(interface_type)
         filepath = trg_project_dir + '\\Src\\' + interface_type +'.c'
@@ -225,6 +227,18 @@ for one_project in projects_list:
         code_c_parser.saveToMybuild(interface_dir,mybuild)
         print(mybuild)
             # print(function_body)
+
+    template_files = []
+    template_files.append('board.conf.h')
+    template_files.append('build.conf')
+    template_files.append('lds.conf')
+    template_files.append('mods.conf')
+    template_files.append('start_script.inc')
+    src_template_dir = path_to_project_dir + '\\templates\\' + project_data['mcu'][:len('stm32fx')].lower() + 'x\\'
+    for template in template_files:
+        if os.path.exists(src_template_dir + template):
+            file_operations.copySrcToDst(src_template_dir + template, init_templates_dir + '\\' + template)
+            code_c_parser.openAndReplaceTemplates(init_templates_dir + '\\' + template, project_data)
 
 
     print(project_data)

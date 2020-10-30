@@ -51,6 +51,21 @@ def getInterfaceInitBlockC(path, interface_type, interface, is_dma = 0):
     else:
         return []
 
+def openAndReplaceTemplates(path, project_data):
+    labels = {}
+    labels['mcuflag'] = project_data['mcu']
+    labels['name'] = project_data['name']
+    openAndReplaceUsingLabels(path, labels)
+
+def openAndReplaceUsingLabels(path, labels):
+    code_lines = []
+    with open(path, 'r') as src:
+        code_lines = src.read().splitlines()
+    code_lines = replaceTextUsingLabels(code_lines, labels)
+    with open(path,'w') as trg:
+        trg.write('\n'.join(code_lines))
+ 
+
 def replaceTextUsingLabels(text, labels):
     out = []
     for line in text:
