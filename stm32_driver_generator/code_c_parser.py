@@ -425,7 +425,7 @@ def genBaseMybuild(path, mcu, folder = 'stm32f103'):
             if elem_h in os.listdir(path):
                 body += ['\t' + r'@IncludeExport(path="' + prj_name + '\")']
                 body += ['\tsource \"' + elem_h +'\"']
-    body += ['}']
+            body += ['}']
     return body
 
 def saveToMybuild(path, fun_body):

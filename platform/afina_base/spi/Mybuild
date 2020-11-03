@@ -4,6 +4,7 @@ module spi1{
 	source "spi1_generated.c"
 	@IncludeExport(path="spi")
 	source "spi1_generated.h"
+}
 @BuildDepends(third_party.bsp.stmf7cube.cube)
 module spi4{
 	source "spi4_generated.c"
