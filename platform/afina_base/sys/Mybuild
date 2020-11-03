@@ -4,11 +4,11 @@ package afina_base.sys
 module arch extends embox.arch.arch {
 	source "arch_generated.c"
 @NoRuntime depends system_init
-	depends third_party.bsp.stmf7cube.cube)
+	depends third_party.bsp.stmf7cube.cube
 }
 @Build(stage=1)
 @BuildDepends(third_party.bsp.stmf7cube.cube)
 static module system_init extends third_party.bsp.st_bsp_api {
 	source "system_stm32f7xx.c"
-@NoRuntime depends third_party.bsp.stmf7cube.cube)
+@NoRuntime depends third_party.bsp.stmf7cube.cube
 }

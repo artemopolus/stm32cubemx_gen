@@ -53,8 +53,8 @@ def getInterfaceInitBlockC(path, interface_type, interface, is_dma = 0):
 
 def openAndReplaceTemplates(path, project_data):
     labels = {}
-    labels['mcuflag'] = project_data['mcu']
-    labels['name'] = project_data['name']
+    labels['GENERATE_MCUFLAG'] = project_data['mcu']
+    labels['GENERATE_NAME'] = project_data['name']
     openAndReplaceUsingLabels(path, labels)
 
 def openAndReplaceUsingLabels(path, labels):
@@ -396,7 +396,7 @@ def genSysMybuild(path,mcu, folder):
             body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
             body += ['static module system_init extends third_party.bsp.st_bsp_api {']
             body += ['\tsource \"' + elem +'\"']
-            body += [r'@NoRuntime depends third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += [r'@NoRuntime depends third_party.bsp.' + bsp_name +  'cube.cube']
             body += ['}']
         if elem.startswith('arch'):
             body += ['@BuildDepends(system_init)']
@@ -404,7 +404,7 @@ def genSysMybuild(path,mcu, folder):
             body += ['module arch extends embox.arch.arch {']
             body += ['\tsource \"' + elem +'\"']
             body += [r'@NoRuntime depends system_init']
-            body += ['\tdepends third_party.bsp.' + bsp_name +  'cube.cube)']
+            body += ['\tdepends third_party.bsp.' + bsp_name +  'cube.cube']
             body += ['}']
     return body
 
