@@ -88,8 +88,8 @@ def updateExternFunFromDMA(path_to_driver, interface_type, interface, dma_list, 
 
     labels = {}
     labels['DMAx'] = dmax_label
-    labels['LL_DMA_CHANNEL_Tx'] = ll_dma_channel_tx
-    labels['LL_DMA_CHANNEL_Rx'] = ll_dma_channel_rx
+    labels['LL_DMA_CHANNEL_Tx'] = ll_dma_channel_tx.upper()
+    labels['LL_DMA_CHANNEL_Rx'] = ll_dma_channel_rx.upper()
     labels[interface_type.upper() + 'x'] = interface.upper()
     transmit_fun_pt = interface_type + add_label + '_dma_transmit'
     receive_fun_pt = interface_type + add_label + '_dma_receive'
@@ -97,7 +97,7 @@ def updateExternFunFromDMA(path_to_driver, interface_type, interface, dma_list, 
     labels[transmit_fun_pt] = (interface + add_label + '_dma').upper() + '_transmit'
     labels[receive_fun_pt] = (interface + add_label + '_dma').upper() + '_receive'
     labels[setdatalength_fun_pt] = (interface + add_label + '_dma').upper() + '_setdatalength'
-    labels['name'] = (interface_type + add_label + '_dma').upper()
+    labels['name'] = (interface + add_label + '_dma').upper()
 
     fun_body = []
     head_body = []
@@ -182,11 +182,13 @@ def updateInterfaceFromDMA(path_to_src, path_to_driver, path_to_hal, interface_t
     num = ll_dma_channel_tx[-1]
     ll_dma_channel_tx = ll_dma_channel_tx[:-1]
     ll_dma_channel_tx = ll_dma_channel_tx + '_' + num
+    ll_dma_channel_tx = ll_dma_channel_tx.upper()
     ll_dma_channel_tx_pt = 'LL_DMA_CHANNEL_Tx'
     ll_dma_channel_rx = 'LL_' + dmax_label[:-1] + '_' + dma_list['RX'].split('_')[1]
     num = ll_dma_channel_rx[-1]
     ll_dma_channel_rx = ll_dma_channel_rx[:-1]
     ll_dma_channel_rx = ll_dma_channel_rx + '_' + num
+    ll_dma_channel_rx = ll_dma_channel_rx.upper()
     ll_dma_channel_rx_pt = 'LL_DMA_CHANNEL_Rx'
 
     dma_channel_tx_irq = dma_list['TX'] + '_IRQn'
@@ -366,7 +368,7 @@ def saveToFileH(path, name, fun_body):
     fun_body = ['#ifndef ' + header] + [ '#define ' + header] + ['#include <stdint.h>'] + fun_body
     
 
-    fun_body = fun_body + ['#endif \\\\' + header]    
+    fun_body = fun_body + ['#endif //' + header]    
     fun_body = fun_body + ['']
 
     with open(path + '\\' + name + '_generated.h', 'w') as trg:
@@ -408,15 +410,19 @@ def genSysMybuild(path,mcu, folder):
             body += ['}']
     return body
 
-def genBaseMybuild(path, mcu, folder = 'stm32f103'):
+def genBaseMybuild(path, project_data, folder = 'stm32f103'):
     body = []
+    mcu = project_data['mcu']
     prj_name = path.split('\\')[-1]
     bsp_name = 'stm' + mcu[5:7].lower()
     body += ['package ' + folder + '.' + prj_name]
     body += []
     body += []
+    print('???????????????????????????????????????????????????????')
+    print(project_data['dma'])
+    gen_c = '_generated.c'
     for elem in os.listdir(path):
-        if elem.endswith('_generated.c'):
+        if elem.endswith(gen_c):
             body += [r'@BuildDepends(third_party.bsp.' + bsp_name +  'cube.cube)']
             body += ['module ' + elem.replace('_generated.c','') +'{']
         # if elem.endswith('.h'):
@@ -425,6 +431,12 @@ def genBaseMybuild(path, mcu, folder = 'stm32f103'):
             if elem_h in os.listdir(path):
                 body += ['\t' + r'@IncludeExport(path="' + prj_name + '\")']
                 body += ['\tsource \"' + elem_h +'\"']
+            if 'dma' in project_data:
+                print(elem.replace(gen_c,'').upper())
+                if elem.replace(gen_c,'').upper() in project_data['dma']:
+                    body += ['\tdepends embox.compat.posix.util.sleep']
+                    body += ['\tdepends embox.kernel.lthread.lthread']
+                    body += ['\tdepends embox.kernel.lthread.sync.mutex']
             body += ['}']
     return body
 

@@ -183,7 +183,7 @@ for one_project in projects_list:
         filepath = trg_project_dir + '\\Src\\' + interface_type +'.c'
         interface_type_list = project_data['interface_list'][interface_type]
         for interface in interface_type_list:
-            interface_dir = current_project_dir + '\\' + interface_type
+            interface_dir = current_project_dir + '\\' + interface_type + '_gen'
             print('interface dir: ' + interface_dir)
             if not os.path.exists(interface_dir):
                 os.mkdir(interface_dir) 
@@ -223,7 +223,7 @@ for one_project in projects_list:
                 function_body = main_includes + function_body
                 code_c_parser.saveToFileC(interface_dir, interface, function_body)
                 code_c_parser.saveToFileH(interface_dir, interface, header_body)
-        mybuild = code_c_parser.genBaseMybuild(interface_dir, project_data['mcu'], folder=current_project_dir.split('\\')[-1])
+        mybuild = code_c_parser.genBaseMybuild(interface_dir, project_data, folder=current_project_dir.split('\\')[-1])
         code_c_parser.saveToMybuild(interface_dir,mybuild)
         print(mybuild)
             # print(function_body)

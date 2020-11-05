@@ -1,0 +1,16 @@
+package afina_base.i2c_gen
+@BuildDepends(third_party.bsp.stmf7cube.cube)
+module i2c1{
+	source "i2c1_generated.c"
+	@IncludeExport(path="i2c_gen")
+	source "i2c1_generated.h"
+}
+@BuildDepends(third_party.bsp.stmf7cube.cube)
+module i2c4{
+	source "i2c4_generated.c"
+	@IncludeExport(path="i2c_gen")
+	source "i2c4_generated.h"
+	depends embox.compat.posix.util.sleep
+	depends embox.kernel.lthread.lthread
+	depends embox.kernel.lthread.sync.mutex
+}

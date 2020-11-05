@@ -1,14 +1,14 @@
-package apollon.spi
+package apollon_slave.spi_gen
 @BuildDepends(third_party.bsp.stmf1cube.cube)
 module spi1{
 	source "spi1_generated.c"
-	@IncludeExport(path="spi")
+	@IncludeExport(path="spi_gen")
 	source "spi1_generated.h"
 }
 @BuildDepends(third_party.bsp.stmf1cube.cube)
 module spi2{
 	source "spi2_generated.c"
-	@IncludeExport(path="spi")
+	@IncludeExport(path="spi_gen")
 	source "spi2_generated.h"
 	depends embox.compat.posix.util.sleep
 	depends embox.kernel.lthread.lthread

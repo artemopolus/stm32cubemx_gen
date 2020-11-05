@@ -1,6 +1,7 @@
 void spi_full_base(void)
 {
     LL_SPI_Enable(SPIx);
+    return 0;
 }
 void spi_full_base_init(void)
 {
@@ -10,6 +11,7 @@ void spi_half_base(void)
 {
     LL_SPI_Enable(SPIx);
 	LL_SPI_SetTransferDirection(SPIx,LL_SPI_HALF_DUPLEX_TX);
+    return 0;
 }
 void spi_half_base_init(void)
 {
@@ -76,10 +78,11 @@ void spi_full_dma(void)
     LL_SPI_EnableDMAReq_TX(SPIx);
     LL_SPI_Enable(SPIx);
     LL_DMA_EnableChannel(DMAx, LL_DMA_CHANNEL_Rx);
-
+    return 0;
 }
 void spi_full_dma_init(void)
 {
+#include <errno.h>
 #include <embox/unit.h>
 #include <kernel/irq.h>
 #include <kernel/lthread/lthread.h>
@@ -87,7 +90,7 @@ void spi_full_dma_init(void)
 #define name_RXTX_BUFFER_SIZE 5
 typedef struct
 {
-    uint8_t dt_buffer[RXTX_BUFFER_SIZE];
+    uint8_t dt_buffer[name_RXTX_BUFFER_SIZE];
     uint8_t dt_count;
     struct mutex dt_mutex;
     struct lthread dt_lth;
@@ -105,7 +108,7 @@ static int name_rx_handler(struct lthread *self);
 static int name_tx_handler(struct lthread *self);
 }
 
-void spi_full_dma_tx_irq_handler(unsigned int irq_nr, void *data)
+static irq_return_t spi_full_dma_tx_irq_handler(unsigned int irq_nr, void *data)
 {
     if (LL_DMA_IsActiveFlag_TCx(DMAx) != RESET)
     {
@@ -114,7 +117,7 @@ void spi_full_dma_tx_irq_handler(unsigned int irq_nr, void *data)
     }
     return IRQ_HANDLED;
 }
-void spi_full_dma_rx_irq_handler(unsigned int irq_nr, void *data)
+static irq_return_t spi_full_dma_rx_irq_handler(unsigned int irq_nr, void *data)
 {
     if (LL_DMA_IsActiveFlag_TCx(DMAx) != RESET)
     {
