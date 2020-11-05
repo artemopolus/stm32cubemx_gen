@@ -1,0 +1,13 @@
+package apollon_slave.spi
+@BuildDepends(third_party.bsp.stmf1cube.cube)
+module spi1{
+	source "spi1_generated.c"
+	@IncludeExport(path="spi")
+	source "spi1_generated.h"
+}
+@BuildDepends(third_party.bsp.stmf1cube.cube)
+module spi2{
+	source "spi2_generated.c"
+	@IncludeExport(path="spi")
+	source "spi2_generated.h"
+}
