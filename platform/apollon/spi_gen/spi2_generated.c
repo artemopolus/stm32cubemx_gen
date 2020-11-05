@@ -48,6 +48,7 @@ static int SPI2_FULL_DMA_init(void)
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
 
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_GPIOB);
   /**SPI2 GPIO Configuration
   PB13   ------> SPI2_SCK

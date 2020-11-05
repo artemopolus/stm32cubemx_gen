@@ -208,8 +208,11 @@ for one_project in projects_list:
                 print(path_to_interface_driver)
                 print('path to HAL: ' + path_to_hal)
                 print(project_data['dma'])
-                function_body = function_body + code_c_parser.updateInterfaceFromDMA(path_to_halsrc, path_to_interface_driver, path_to_hal, interface_type, interface, project_data['dma'][interface.upper()])
-
+                main_fun_body = code_c_parser.updateInterfaceFromDMA(path_to_halsrc, path_to_interface_driver, path_to_hal, interface_type, interface, project_data['dma'][interface.upper()])
+                dma_strings = file_operations.getStringFromFile(project_dir, 'dma', 'EnableClock', fileext='.c')
+                for dma_str in dma_strings:
+                    main_fun_body.insert(10, dma_str )
+                function_body = function_body + main_fun_body
                 externC, externH = code_c_parser.updateExternFunFromDMA(path_to_interface_driver, interface_type, interface, project_data['dma'][interface.upper()])
                 function_body = function_body + externC
                 code_c_parser.saveToFileC(interface_dir, interface, function_body)

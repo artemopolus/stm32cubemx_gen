@@ -6,6 +6,16 @@ from shutil import copyfile
 def copySrcToDst(src, dst):
     copyfile(src, dst)
 
+def getStringFromFile(path, filename, label, fileext = '.c'):
+    list_files = findFileInFolder(path, filename, fileext=fileext)
+    out = []
+    with open(list_files[0],'r') as src:
+        code_lines = src.read().splitlines()
+        for line in code_lines:
+            if line.find(label) != -1:
+                out.append(line)
+    return out 
+
 
 def findFileInFolder(path, file, fileext = ''):
     target_path = []

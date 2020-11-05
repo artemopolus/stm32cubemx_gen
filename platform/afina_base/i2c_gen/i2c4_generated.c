@@ -24,6 +24,8 @@ static int I2C4_FULL_DMA_init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
   /**I2C4 GPIO Configuration
   PD13   ------> I2C4_SDA
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA2);
   PD12   ------> I2C4_SCL
   */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13;

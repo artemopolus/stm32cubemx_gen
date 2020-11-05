@@ -207,6 +207,9 @@ def updateInterfaceFromDMA(path_to_src, path_to_driver, path_to_hal, interface_t
     interface_label = interface.upper()
     interface_pt = interface_type.upper() + 'x'
     target_name = (interface + add_label + '_dma').upper()
+
+    
+
     hal_fun_body[0] = hal_fun_body[0].replace('void MX_' + interface.upper() + '_Init', 'static int ' + target_name + '_init' )
     del hal_fun_body[-1]
     hal_fun_body = ['EMBOX_UNIT_INIT(' + target_name + '_init);'] + hal_fun_body
