@@ -112,6 +112,7 @@ def updateExternFunFromDMA(path_to_driver, interface_type, interface, dma_list, 
     add_fun = getFunctionC(path_to_driver, interface, is_cubemx=0, str_label=setdatalength_fun_pt)
     if add_fun:
         head_body.append('extern ' + add_fun[0] + ';')
+    head_body = replaceTextUsingLabels(head_body, labels)
     fun_body = fun_body + replaceTextUsingLabels(add_fun, labels)
 
     return fun_body, head_body
