@@ -81,3 +81,31 @@ static int SPI4_FULL_BASE_init(void)
     LL_SPI_Enable(SPI4);
     return 0;
 }
+uint8_t SPI4_FULL_BASE_get_option(const uint8_t address)
+{
+    uint8_t value = address | 0x80;
+	// remember to reset CS --> LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4);
+	while(!LL_SPI_IsActiveFlag_TXE(SPI4));
+	LL_SPI_TransmitData8(SPI4, value);
+	while(!LL_SPI_IsActiveFlag_TXE(SPI4));
+	while(LL_SPI_IsActiveFlag_BSY(SPI4));
+	while(!LL_SPI_IsActiveFlag_RXNE(SPI4));
+	uint8_t result = 0;
+	result = LL_SPI_ReceiveData8(SPI4);
+	// remember to set CS --> LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_4);
+    return result;
+}
+uint8_t SPI4_FULL_BASE_set_option(const uint8_t address, const uint8_t value)
+{
+    uint8_t mask = 0x7F ;//01111111b
+	mask &= address;
+    // remember to reset CS -->LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4);
+    while(!LL_SPI_IsActiveFlag_TXE(SPI4));
+    LL_SPI_TransmitData8(SPI4, mask);
+    while(!LL_SPI_IsActiveFlag_TXE(SPI4));
+	LL_SPI_TransmitData8(SPI4, value);
+	while(!LL_SPI_IsActiveFlag_TXE(SPI4));
+	while(LL_SPI_IsActiveFlag_BSY(SPI4));
+	// remember to set CS -->LL_GPIO_SetOutputPin(GPIOA,LL_GPIO_PIN_4);
+    return 0;
+}
