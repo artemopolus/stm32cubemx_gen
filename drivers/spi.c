@@ -1,3 +1,4 @@
+/* SPI FULL duplex base functions START */ 
 void spi_full_base(void)
 {
     LL_SPI_Enable(SPIx);
@@ -7,6 +8,36 @@ void spi_full_base_init(void)
 {
 #include <embox/unit.h>
 }
+uint8_t spi_full_base_get_option(const uint8_t address)
+{
+    uint8_t value = address | 0x80;
+	// remember to reset CS --> LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4);
+	while(!LL_SPI_IsActiveFlag_TXE(SPIx));
+	LL_SPI_TransmitData8(SPIx, value);
+	while(!LL_SPI_IsActiveFlag_TXE(SPIx));
+	while(LL_SPI_IsActiveFlag_BSY(SPIx));
+	while(!LL_SPI_IsActiveFlag_RXNE(SPIx));
+	uint8_t result = 0;
+	result = LL_SPI_ReceiveData8(SPIx);
+	// remember to set CS --> LL_GPIO_SetOutputPin(GPIOA, LL_GPIO_PIN_4);
+    return result;
+}
+uint8_t spi_full_base_set_option(const uint8_t address, const uint8_t value)
+{
+    uint8_t mask = 0x7F ;//01111111b
+	mask &= address;
+    // remember to reset CS -->LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_4);
+    while(!LL_SPI_IsActiveFlag_TXE(SPIx));
+    LL_SPI_TransmitData8(SPIx, mask);
+    while(!LL_SPI_IsActiveFlag_TXE(SPIx));
+	LL_SPI_TransmitData8(SPIx, value);
+	while(!LL_SPI_IsActiveFlag_TXE(SPIx));
+	while(LL_SPI_IsActiveFlag_BSY(SPIx));
+	// remember to set CS -->LL_GPIO_SetOutputPin(GPIOA,LL_GPIO_PIN_4);
+    return 0;
+}
+
+/* SPI HALF duplex base functions START */ 
 void spi_half_base(void)
 {
     LL_SPI_Enable(SPIx);
@@ -48,6 +79,10 @@ uint8_t spi_half_base_set_option(const uint8_t address, const uint8_t value)
 	// remember to set CS -->LL_GPIO_SetOutputPin(GPIOA,LL_GPIO_PIN_4);
     return 0;
 }
+
+/* SPI HALF duplex base functions END */ 
+
+
 void spi_full_dma(void)
 {
     LL_DMA_ConfigAddresses(DMAx,
