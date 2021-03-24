@@ -33,6 +33,13 @@ DMA_HandleTypeDef hdma_sdmmc1_tx;
 void MX_SDMMC1_SD_Init(void)
 {
 
+  /* USER CODE BEGIN SDMMC1_Init 0 */
+
+  /* USER CODE END SDMMC1_Init 0 */
+
+  /* USER CODE BEGIN SDMMC1_Init 1 */
+
+  /* USER CODE END SDMMC1_Init 1 */
   hsd1.Instance = SDMMC1;
   hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
   hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
@@ -40,6 +47,9 @@ void MX_SDMMC1_SD_Init(void)
   hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
   hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
   hsd1.Init.ClockDiv = 0;
+  /* USER CODE BEGIN SDMMC1_Init 2 */
+
+  /* USER CODE END SDMMC1_Init 2 */
 
 }
 
@@ -123,6 +133,9 @@ void HAL_SD_MspInit(SD_HandleTypeDef* sdHandle)
 
     __HAL_LINKDMA(sdHandle,hdmatx,hdma_sdmmc1_tx);
 
+    /* SDMMC1 interrupt Init */
+    HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
   /* USER CODE BEGIN SDMMC1_MspInit 1 */
 
   /* USER CODE END SDMMC1_MspInit 1 */
@@ -156,6 +169,9 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* sdHandle)
     /* SDMMC1 DMA DeInit */
     HAL_DMA_DeInit(sdHandle->hdmarx);
     HAL_DMA_DeInit(sdHandle->hdmatx);
+
+    /* SDMMC1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
   /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
 
   /* USER CODE END SDMMC1_MspDeInit 1 */

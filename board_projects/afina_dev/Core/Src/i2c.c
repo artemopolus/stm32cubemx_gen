@@ -31,6 +31,13 @@ I2C_HandleTypeDef hi2c4;
 void MX_I2C1_Init(void)
 {
 
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
   hi2c1.Init.Timing = 0x20404768;
   hi2c1.Init.OwnAddress1 = 0;
@@ -56,12 +63,22 @@ void MX_I2C1_Init(void)
   {
     Error_Handler();
   }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
 
 }
 /* I2C4 init function */
 void MX_I2C4_Init(void)
 {
 
+  /* USER CODE BEGIN I2C4_Init 0 */
+
+  /* USER CODE END I2C4_Init 0 */
+
+  /* USER CODE BEGIN I2C4_Init 1 */
+
+  /* USER CODE END I2C4_Init 1 */
   hi2c4.Instance = I2C4;
   hi2c4.Init.Timing = 0x20404768;
   hi2c4.Init.OwnAddress1 = 0;
@@ -87,6 +104,9 @@ void MX_I2C4_Init(void)
   {
     Error_Handler();
   }
+  /* USER CODE BEGIN I2C4_Init 2 */
+
+  /* USER CODE END I2C4_Init 2 */
 
 }
 
